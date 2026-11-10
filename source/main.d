@@ -84,8 +84,6 @@ void render()
 int main()
 {
 	InitWindow(WIDTH, HEIGHT, "Flappybird");
-	scope (exit)
-		CloseWindow();
 
 	SetTargetFPS(60);
 
@@ -99,6 +97,8 @@ int main()
 
 		EndDrawing();
 	}
+
+	CloseWindow();
 
 	return 0;
 }
