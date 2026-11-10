@@ -12,15 +12,10 @@ float pillarSpawnDateAccumulator = 0;
 
 Pillar[] pillars;
 
-struct Coordinate {
-    int x;
-    int y;
-}
-
 class Sprite
 {
-	auto position = Coordinate(0, 0);
-	auto size = Coordinate(0, 0);
+	auto position = Vector2(0, 0);
+	auto size = Vector2(0, 0);
 
 	void draw()
 	{
@@ -43,11 +38,16 @@ class Pillar : Sprite
 
 	override void draw()
 	{
+		int px = to!int(position.x);
+		int py = to!int(position.y);
+		int sx = to!int(size.x);
+		int sy = to!int(size.y);
+
 		// top
-		DrawRectangle(position.x, position.y - size.y + pxVisibleFromTop, size.x, size.y, Colors.WHITE);
+		DrawRectangle(px, py - sy + pxVisibleFromTop, sx, sy, Colors.WHITE);
 
 		// bottom
-		DrawRectangle(position.x, position.y + HEIGHT - pxVisibleFromBottom, size.x, size.y, Colors.WHITE);
+		DrawRectangle(px, py + HEIGHT - pxVisibleFromBottom, sx, sy, Colors.WHITE);
 	}
 }
 
@@ -55,19 +55,19 @@ void tick(float deltaTime)
 {
 	pillarSpawnDateAccumulator += deltaTime;
 
+	// move pillars
+	foreach (pillar; pillars)
+	{
+		pillar.position.x -= deltaTime * PILLAR_SPEED;
+	}
+
 	// spawn new pillars
 	if (pillarSpawnDateAccumulator >= 1)
 	{
 		pillarSpawnDateAccumulator -= 1;
 
 		auto pillar = new Pillar();
-		pillar.position.x = WIDTH;
-	}
-
-	// move pillars
-	foreach (pillar; pillars)
-	{
-		pillar.position.x -= to!int(deltaTime * PILLAR_SPEED);
+		pillar.position.x = WIDTH - pillarSpawnDateAccumulator * PILLAR_SPEED;
 	}
 }
 
